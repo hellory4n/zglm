@@ -5,12 +5,10 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     const mod = b.addModule("zglm", .{
-        .root_source_file = b.path("src/root.zig"),
+        .root_source_file = b.path("src/zglm.zig"),
         .target = target,
         .optimize = optimize,
     });
-    mod.addIncludePath(b.path("src/c/include"));
-    mod.link_libc = true;
 
     const mod_tests = b.addTest(.{
         .root_module = mod,
