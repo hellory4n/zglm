@@ -228,7 +228,7 @@ test "vec3f dot product" {
 }
 
 test "vec3f length" {
-    // the length of a vector of ones must equal 'sqrt(VecN.)'
+    // the length of a vector of ones must equal 'sqrt(VecN.n)'
     try testing.expectApproxEqAbs(
         zglm.sqrt(@as(f32, Vec3f.n)),
         Vec3f.len(vec3f(1, 1, 1)),

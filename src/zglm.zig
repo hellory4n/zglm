@@ -91,6 +91,17 @@ pub const vec3d = vec3.vec3d;
 pub const vec3i = vec3.vec3i;
 pub const vec3l = vec3.vec3l;
 
+const vec4 = @import("vec4.zig");
+pub const Vec4 = vec4.Vec4;
+pub const Vec4f = vec4.Vec4f;
+pub const Vec4d = vec4.Vec4d;
+pub const Vec4i = vec4.Vec4i;
+pub const Vec4l = vec4.Vec4l;
+pub const vec4f = vec4.vec4f;
+pub const vec4d = vec4.vec4d;
+pub const vec4i = vec4.vec4i;
+pub const vec4l = vec4.vec4l;
+
 test {
     std.testing.refAllDecls(@This());
 }
