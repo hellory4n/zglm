@@ -1,8 +1,6 @@
 # zglm
 
-[Zig](https://ziglang.org) OpenGL Mathematics library. Heavily based on the [cglm](https://github.com/recp/cglm), [linmath](https://github.com/datenwolf/linmath.h), and [mach/math](https://github.com/hexops/mach/tree/main/src/math) libraries. Only tested on Zig v0.15.2.
-
-Math can be quite the pickle so currently this only includes the features I need.
+[Zig](https://ziglang.org) OpenGL Mathematics library. Heavily based on the [linmath](https://github.com/datenwolf/linmath.h), and [mach/math](https://github.com/hexops/mach/tree/main/src/math) libraries. Only tested on Zig v0.15.2.
 
 ## Conventions
 
