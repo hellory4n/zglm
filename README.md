@@ -4,4 +4,6 @@
 
 Math can be quite the pickle so currently this only includes the features I need.
 
+## Conventions
+
 All matrices and vectors are column-major. While most math libraries provide both left-handed and right-handed variants for each operation (e.g. `doThingLh`, `doThingRh`), zglm chooses a default of right-handed coordinates with +Y being up, NDC coordinates being -1 to 1, and the origin point being at the bottom left. This is consistent with OpenGL conventions.

@@ -195,6 +195,15 @@ pub fn Vec3(comptime Type: type) type {
         pub fn distance(left: @This(), right: @This()) f32 {
             return vec_ops.distance(n, T, left.raw, right.raw);
         }
+
+        /// Returns the cross product of 2 vector3s
+        pub fn cross(left: @This(), right: @This()) @This() {
+            return init(
+                left.y() * right.z() - left.z() * right.y(),
+                left.z() * right.x() - left.x() * right.z(),
+                left.x() * right.y() - left.y() * right.x(),
+            );
+        }
     };
 }
 

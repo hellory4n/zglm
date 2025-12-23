@@ -1,4 +1,5 @@
 const std = @import("std");
+const testing = std.testing;
 
 // 2 math namespaces is a bit obnoxious
 // instead we export some std.math stuff here so that you only have to use the zglm namespace
@@ -101,6 +102,98 @@ pub const vec4f = vec4.vec4f;
 pub const vec4d = vec4.vec4d;
 pub const vec4i = vec4.vec4i;
 pub const vec4l = vec4.vec4l;
+
+const vec_ops = @import("vec_ops.zig");
+
+fn SwizzleLiteralToZglmVector(comptime Src: type, comptime comps: @TypeOf(.enum_literal)) type {
+    const vec_type = @typeInfo(Src).vector.child;
+    const vec_len = @typeInfo(vec_ops.TypeFromSwizzleLiteral(vec_type, comps)).vector.len;
+    return switch (vec_len) {
+        2 => Vec2(vec_type),
+        3 => Vec3(vec_type),
+        4 => Vec4(vec_type),
+        else => unreachable,
+    };
+}
+
+/// Implements vector swizzling through major amounts of tomfoolery. For example `.xy`, `.zxy`,
+/// `.zzzw`, really any combination of xyzw that comes to mind. RGBA is also supported, for
+/// example `.abgr`.
+pub fn swizzle(
+    src: anytype,
+    comptime comps: @TypeOf(.enum_literal),
+) SwizzleLiteralToZglmVector(@TypeOf(src.raw), comps) {
+    const vec = vec_ops.swizzleImpl(src.raw, comps);
+    const vec_type = @typeInfo(@TypeOf(vec)).vector.child;
+    const vec_len = @typeInfo(@TypeOf(vec)).vector.len;
+
+    return switch (vec_len) {
+        2 => Vec2(vec_type).fromStdVector(vec),
+        3 => Vec3(vec_type).fromStdVector(vec),
+        4 => Vec4(vec_type).fromStdVector(vec),
+        else => unreachable,
+    };
+}
+
+test "vec2 -> vec2 swizzle" {
+    const v = vec2i(1, 2);
+    try testing.expectEqual(vec2i(1, 2), swizzle(v, .xy));
+    try testing.expectEqual(vec2i(2, 1), swizzle(v, .yx));
+    try testing.expectEqual(vec2i(1, 1), swizzle(v, .xx));
+    try testing.expectEqual(vec2i(2, 2), swizzle(v, .yy));
+}
+
+test "vec2 -> vec3 swizzle" {
+    const v = vec2i(2, 3);
+    const swizzelma = swizzle(v, .yxx);
+    try testing.expectEqual(vec3i(3, 2, 2), swizzelma);
+    try testing.expectEqual(vec3i(2, 3, 2), swizzle(v, .xyx));
+    try testing.expectEqual(vec3i(3, 3, 2), swizzle(v, .yyx));
+}
+
+test "vec3 -> vec2 swizzle" {
+    const v = vec3i(4, 5, 6);
+    try testing.expectEqual(vec2i(4, 5), swizzle(v, .xy));
+    try testing.expectEqual(vec2i(6, 4), swizzle(v, .zx));
+    try testing.expectEqual(vec2i(5, 5), swizzle(v, .yy));
+}
+
+test "vec3 -> vec3 swizzle" {
+    const v = vec3i(7, 8, 9);
+    try testing.expectEqual(vec3i(7, 8, 9), swizzle(v, .xyz));
+    try testing.expectEqual(vec3i(9, 8, 7), swizzle(v, .zyx));
+    try testing.expectEqual(vec3i(8, 7, 8), swizzle(v, .yxy));
+}
+
+test "vec3 -> vec4 swizzle" {
+    const v = vec3i(1, 2, 3);
+    try testing.expectEqual(vec4i(1, 2, 3, 1), swizzle(v, .xyzx));
+    try testing.expectEqual(vec4i(3, 3, 2, 1), swizzle(v, .zzyx));
+}
+
+test "vec4 swizzle" {
+    const v = vec4i(10, 20, 30, 40);
+    try testing.expectEqual(
+        vec4i(10, 20, 30, 40),
+        swizzle(v, .xyzw),
+    );
+    try testing.expectEqual(
+        vec4i(40, 30, 20, 10),
+        swizzle(v, .wzyx),
+    );
+    try testing.expectEqual(
+        vec3i(20, 20, 40),
+        swizzle(v, .yyw),
+    );
+}
+
+test "rgba swizzle" {
+    const v = vec4i(10, 20, 30, 40);
+    try testing.expectEqual(
+        vec4i(40, 30, 20, 10),
+        swizzle(v, .abgr),
+    );
+}
 
 test {
     std.testing.refAllDecls(@This());

@@ -90,3 +90,60 @@ pub fn approxEq(
         @reduce(.And, a == b);
     }
 }
+
+const VecComponents = enum { unused, x, y, z, w };
+
+fn getSwizzleComps(comps: @TypeOf(.enum_literal)) [4]VecComponents {
+    const comp_str = @tagName(comps);
+    if (comp_str.len > 4) {
+        @compileError("swizzle literal '." ++ comp_str ++ " too long");
+    }
+
+    var components: [4]VecComponents = .{ .unused, .unused, .unused, .unused };
+    inline for (comp_str, 0..comp_str.len) |comp, i| {
+        components[i] = switch (comp) {
+            'x', 'r' => .x,
+            'y', 'g' => .y,
+            'z', 'b' => .z,
+            'w', 'a' => .w,
+            else => @compileError("invalid swizzle literal '." ++ comp_str ++ "'"),
+        };
+    }
+    return components;
+}
+
+pub fn TypeFromSwizzleLiteral(comptime T: type, comptime comps: @TypeOf(.enum_literal)) type {
+    const components = getSwizzleComps(comps);
+    var component_count = 0;
+    inline for (components) |comp| {
+        if (comp == .unused) {
+            break;
+        }
+        component_count += 1;
+    }
+    return @Vector(component_count, T);
+}
+
+/// additional fuckery is required to turn it into a zglm vector
+pub fn swizzleImpl(
+    src: anytype,
+    comptime components: @TypeOf(.enum_literal),
+) TypeFromSwizzleLiteral(@typeInfo(@TypeOf(src)).vector.child, components) {
+    // TODO this parses the swizzle literal 3 times who gives a shit
+    const comps = comptime getSwizzleComps(components);
+    var dst: TypeFromSwizzleLiteral(@typeInfo(@TypeOf(src)).vector.child, components) = undefined;
+    const leng: usize = @typeInfo(@TypeOf(dst)).vector.len;
+
+    inline for (comps, 0..comps.len) |comp, i| {
+        if (i >= leng) break;
+        switch (comp) {
+            .x => dst[i] = src[0],
+            .y => dst[i] = src[1],
+            .z => dst[i] = src[2],
+            .w => dst[i] = src[3],
+            .unused => break,
+        }
+    }
+
+    return dst;
+}
