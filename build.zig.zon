@@ -1,13 +1,11 @@
 .{
     .name = .zglm,
-    .version = "0.0.0",
+    .version = "0.1.0",
     .fingerprint = 0x92157b0fd8f1f9ac,
     .minimum_zig_version = "0.15.2",
     .paths = .{
         "build.zig",
         "build.zig.zon",
-        "src/c/include",
-        "src/c/src",
-        "src/root.zig",
+        "src",
     },
 }
