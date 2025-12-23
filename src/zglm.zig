@@ -195,6 +195,18 @@ test "rgba swizzle" {
     );
 }
 
+// just making sure it compiles
+test "the vector section from the readme" {
+    const zglm = @This();
+
+    const a = zglm.vec3f(1, 2, 3);
+    const b = zglm.Vec3f.one();
+    const c = a.cross(zglm.swizzle(b, .zyx));
+
+    // "unused local constant" shut up
+    _ = c;
+}
+
 test {
     std.testing.refAllDecls(@This());
 }
