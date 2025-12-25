@@ -91,7 +91,7 @@ pub fn approxEq(
     }
 }
 
-const VecComponents = enum { unused, x, y, z, w };
+const VecComponents = enum { unused, x, y, z, w, @"0", @"1" };
 
 fn getSwizzleComps(comps: @TypeOf(.enum_literal)) [4]VecComponents {
     const comp_str = @tagName(comps);
@@ -106,6 +106,8 @@ fn getSwizzleComps(comps: @TypeOf(.enum_literal)) [4]VecComponents {
             'y', 'g' => .y,
             'z', 'b' => .z,
             'w', 'a' => .w,
+            '0' => .@"0",
+            '1' => .@"1",
             else => @compileError("invalid swizzle literal '." ++ comp_str ++ "'"),
         };
     }
@@ -141,6 +143,8 @@ pub fn swizzleImpl(
             .y => dst[i] = src[1],
             .z => dst[i] = src[2],
             .w => dst[i] = src[3],
+            .@"0" => dst[i] = 0,
+            .@"1" => dst[i] = 1,
             .unused => break,
         }
     }

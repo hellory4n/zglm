@@ -149,6 +149,8 @@ test "vec2 -> vec3 swizzle" {
     try testing.expectEqual(vec3i(3, 2, 2), swizzelma);
     try testing.expectEqual(vec3i(2, 3, 2), swizzle(v, .xyx));
     try testing.expectEqual(vec3i(3, 3, 2), swizzle(v, .yyx));
+    try testing.expectEqual(vec3i(2, 3, 0), swizzle(v, .xy0));
+    try testing.expectEqual(vec3i(2, 3, 1), swizzle(v, .xy1));
 }
 
 test "vec3 -> vec2 swizzle" {
