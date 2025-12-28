@@ -70,38 +70,38 @@ pub fn approxEq(a: anytype, b: anytype) bool {
     return std.math.approxEqAbs(@TypeOf(a), a, b, epsilon);
 }
 
-const vec2 = @import("vec2.zig");
-pub const Vec2 = vec2.Vec2;
-pub const Vec2f = vec2.Vec2f;
-pub const Vec2d = vec2.Vec2d;
-pub const Vec2i = vec2.Vec2i;
-pub const Vec2l = vec2.Vec2l;
-pub const vec2f = vec2.vec2f;
-pub const vec2d = vec2.vec2d;
-pub const vec2i = vec2.vec2i;
-pub const vec2l = vec2.vec2l;
+const vec2_mod = @import("vec2.zig");
+pub const Vec2 = vec2_mod.Vec2;
+pub const Vec2f = vec2_mod.Vec2f;
+pub const Vec2d = vec2_mod.Vec2d;
+pub const Vec2i = vec2_mod.Vec2i;
+pub const Vec2l = vec2_mod.Vec2l;
+pub const vec2f = vec2_mod.vec2f;
+pub const vec2d = vec2_mod.vec2d;
+pub const vec2i = vec2_mod.vec2i;
+pub const vec2l = vec2_mod.vec2l;
 
-const vec3 = @import("vec3.zig");
-pub const Vec3 = vec3.Vec3;
-pub const Vec3f = vec3.Vec3f;
-pub const Vec3d = vec3.Vec3d;
-pub const Vec3i = vec3.Vec3i;
-pub const Vec3l = vec3.Vec3l;
-pub const vec3f = vec3.vec3f;
-pub const vec3d = vec3.vec3d;
-pub const vec3i = vec3.vec3i;
-pub const vec3l = vec3.vec3l;
+const vec3_mod = @import("vec3.zig");
+pub const Vec3 = vec3_mod.Vec3;
+pub const Vec3f = vec3_mod.Vec3f;
+pub const Vec3d = vec3_mod.Vec3d;
+pub const Vec3i = vec3_mod.Vec3i;
+pub const Vec3l = vec3_mod.Vec3l;
+pub const vec3f = vec3_mod.vec3f;
+pub const vec3d = vec3_mod.vec3d;
+pub const vec3i = vec3_mod.vec3i;
+pub const vec3l = vec3_mod.vec3l;
 
-const vec4 = @import("vec4.zig");
-pub const Vec4 = vec4.Vec4;
-pub const Vec4f = vec4.Vec4f;
-pub const Vec4d = vec4.Vec4d;
-pub const Vec4i = vec4.Vec4i;
-pub const Vec4l = vec4.Vec4l;
-pub const vec4f = vec4.vec4f;
-pub const vec4d = vec4.vec4d;
-pub const vec4i = vec4.vec4i;
-pub const vec4l = vec4.vec4l;
+const vec4_mod = @import("vec4.zig");
+pub const Vec4 = vec4_mod.Vec4;
+pub const Vec4f = vec4_mod.Vec4f;
+pub const Vec4d = vec4_mod.Vec4d;
+pub const Vec4i = vec4_mod.Vec4i;
+pub const Vec4l = vec4_mod.Vec4l;
+pub const vec4f = vec4_mod.vec4f;
+pub const vec4d = vec4_mod.vec4d;
+pub const vec4i = vec4_mod.vec4i;
+pub const vec4l = vec4_mod.vec4l;
 
 const vec_ops = @import("vec_ops.zig");
 
@@ -207,6 +207,25 @@ test "the vector section from the readme" {
 
     // "unused local constant" shut up
     _ = c;
+}
+
+const mat4x4_mod = @import("mat4x4.zig");
+pub const Mat4x4 = mat4x4_mod.Mat4x4;
+
+// just making sure it compiles
+test "the matrix section from the readme" {
+    const zglm = @This();
+
+    const pos = zglm.Mat4x4.translate(zglm.vec3f(1, 2, 3));
+    const rot = zglm.Mat4x4.rotateX(1).mul(zglm.Mat4x4.rotateY(2));
+
+    const model = zglm.Mat4x4.identity();
+    const view = rot.mul(pos);
+    const projection = zglm.Mat4x4.perspective(zglm.deg2rad(45), 16 / 9, 0.001, 1000);
+    const mvp = projection.mul(view).mul(model);
+
+    // "unused local constant" shut up
+    _ = mvp;
 }
 
 test {

@@ -15,7 +15,7 @@ exe.root_module.addImport("zglm", zglm.module("zglm"));
 
 ## Conventions
 
-All matrices and vectors are column-major. While most math libraries provide both left-handed and right-handed variants for each operation (e.g. `doThingLh`, `doThingRh`), zglm chooses a default of right-handed coordinates with +Y being up, NDC coordinates being -1 to 1, and the origin point being at the bottom left. This is consistent with OpenGL conventions.
+zglm follows OpenGL conventions, that means all matrices and vectors are column-major, coordinates are right-handed, +Y is up, -Z is forward, and NDC coordinates are -1 to 1. Might add functions for other conventions, who knows. All rotations are in radians.
 
 ## Vectors
 
@@ -25,4 +25,17 @@ const zglm = @import("zglm");
 const a = zglm.vec3f(1, 2, 3);
 const b = zglm.Vec3f.one();
 const c = a.cross(zglm.swizzle(b, .zyx));
+```
+
+## Matrices
+
+```zig
+const zglm = @import("zglm");
+const pos = zglm.Mat4x4.translate(zglm.vec3f(1, 2, 3));
+const rot = zglm.Mat4x4.rotateX(1).mul(zglm.Mat4x4.rotateY(2));
+
+const model = zglm.Mat4x4.identity();
+const view = rot.mul(pos);
+const projection = zglm.Mat4x4.perspective(zglm.deg2rad(45), 16 / 9, 0.001, 1000);
+const mvp = projection.mul(view).mul(model);
 ```
