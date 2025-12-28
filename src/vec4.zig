@@ -112,7 +112,7 @@ pub fn Vec4(comptime Type: type) type {
 
         /// Component-wise multiplication/scale by a scalar
         pub fn muls(left: @This(), right: T) @This() {
-            return .{ .raw = left.raw * right };
+            return .{ .raw = left.raw * splat(right).raw };
         }
 
         /// Component-wise division
@@ -122,7 +122,7 @@ pub fn Vec4(comptime Type: type) type {
 
         /// Component-wise division by a scalar
         pub fn divs(left: @This(), right: T) @This() {
-            return .{ .raw = left.raw / right };
+            return .{ .raw = left.raw / splat(right).raw };
         }
 
         /// Component-wise modulo
@@ -132,7 +132,7 @@ pub fn Vec4(comptime Type: type) type {
 
         /// Component-wise modulo by a scalar
         pub fn mods(left: @This(), right: T) @This() {
-            return .{ .raw = left.raw % right };
+            return .{ .raw = left.raw % splat(right).raw };
         }
 
         /// Negates the vector.
