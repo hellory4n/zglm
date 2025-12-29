@@ -202,6 +202,31 @@ pub const Mat4x4 = struct {
         return new;
     }
 
+    pub fn orthonormalize(mat: Mat4x4) Mat4x4 {
+        var new = mat;
+        var s = 1;
+        new = new.raw[2].normalize();
+
+        s = new.raw[1].dot(new.raw[2]);
+        var h = new.raw[2].muls(s);
+        new.raw[1] = new.raw[1].sub(h);
+        new.raw[1] = new.raw[1].normalize();
+
+        s = new.raw[0].dot(new.raw[2]);
+        h = new.raw[2].muls(s);
+        new.raw[0] = new.raw[0].sub(h);
+
+        s = new.raw[0].dot(new.raw[1]);
+        h = new.raw[1].muls(s);
+        new.raw[0] = new.raw[0].sub(h);
+        new.raw[0] = new.raw[0].normalize();
+
+        // linmath uses c fuckery to ignore the w component
+        // unfortunately this is not C
+        new.raw[3] = mat.raw[3];
+        return new;
+    }
+
     /// Returns an orthographic projection matrix with OpenGL conventions.
     pub fn ortho(left: f32, right: f32, bottom: f32, top: f32, near: f32, far: f32) Mat4x4 {
         var mat = zero();
