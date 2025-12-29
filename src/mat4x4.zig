@@ -65,6 +65,21 @@ pub const Mat4x4 = struct {
         );
     }
 
+    /// Returns the matrix as a 2 dimensional array
+    pub fn toArray2D(mat: Mat4x4) [4][4]f32 {
+        return .{
+            mat.raw[0].toArray(),
+            mat.raw[1].toArray(),
+            mat.raw[2].toArray(),
+            mat.raw[3].toArray(),
+        };
+    }
+
+    /// Returns the matrix as a 1 dimensional array
+    pub fn toArray1D(mat: Mat4x4) [16]f32 {
+        return @bitCast(mat.toArray2D());
+    }
+
     /// Returns the transposed matrix.
     pub fn transpose(mat: Mat4x4) Mat4x4 {
         var dst: Mat4x4 = undefined;
