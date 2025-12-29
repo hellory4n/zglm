@@ -1,6 +1,8 @@
 # zglm (wip)
 
-[Zig](https://ziglang.org) OpenGL Mathematics library. Heavily based on the [linmath](https://github.com/datenwolf/linmath.h) and [mach/math](https://github.com/hexops/mach/tree/main/src/math) libraries. Only tested on Zig v0.15.2.
+[Zig](https://ziglang.org) OpenGL Mathematics library. Only tested on Zig v0.15.2.
+
+As the GL in the name implies, zglm is intended to be similar to GLSL and work with OpenGL conventions, that is, column-major matrices, right-handed coordinates, +Y up, and NDC ranging from -1 to 1.
 
 ## Getting started
 
@@ -12,10 +14,6 @@ And add this (for example) to your `build.zig`:
 const zglm = b.dependency("zglm", .{});
 exe.root_module.addImport("zglm", zglm.module("zglm"));
 ```
-
-## Conventions
-
-zglm follows OpenGL conventions, that means all matrices and vectors are column-major, coordinates are right-handed, +Y is up, -Z is forward, and NDC coordinates are -1 to 1. Might add functions for other conventions, who knows. All rotations are in radians.
 
 ## Vectors
 
