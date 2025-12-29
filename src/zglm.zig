@@ -57,176 +57,722 @@ pub const tanh = std.math.tanh;
 /// absolute difference between them is less or equal than `zglm.eps(T)`.
 ///
 /// NaN values are never considered equal to any value.
-pub fn approxEq(a: anytype, b: anytype) bool {
-    if (@TypeOf(a) != @TypeOf(b)) {
-        @compileError("a and b must be the same type");
+pub fn approxEq(left: anytype, right: anytype) bool {
+    if (@TypeOf(left) != @TypeOf(right)) {
+        @compileError("left and right must be the same type");
     }
 
-    const epsilon = switch (@typeInfo(@TypeOf(a))) {
-        .float => eps(@TypeOf(a)),
+    const epsilon = switch (@typeInfo(@TypeOf(left))) {
+        .float => eps(@TypeOf(left)),
         .comptime_float => eps(comptime_float),
-        else => @compileError("expected float, got " ++ @typeName(@TypeOf(a))),
+        else => @compileError("expected float, got " ++ @typeName(@TypeOf(right))),
     };
-    return std.math.approxEqAbs(@TypeOf(a), a, b, epsilon);
+    return std.math.approxEqAbs(@TypeOf(left), left, right, epsilon);
 }
 
-const vec2_mod = @import("vec2.zig");
-pub const Vec2 = vec2_mod.Vec2;
-pub const Vec2f = vec2_mod.Vec2f;
-pub const Vec2d = vec2_mod.Vec2d;
-pub const Vec2i = vec2_mod.Vec2i;
-pub const Vec2l = vec2_mod.Vec2l;
-pub const vec2f = vec2_mod.vec2f;
-pub const vec2d = vec2_mod.vec2d;
-pub const vec2i = vec2_mod.vec2i;
-pub const vec2l = vec2_mod.vec2l;
+const vec = @import("vec.zig");
 
-const vec3_mod = @import("vec3.zig");
-pub const Vec3 = vec3_mod.Vec3;
-pub const Vec3f = vec3_mod.Vec3f;
-pub const Vec3d = vec3_mod.Vec3d;
-pub const Vec3i = vec3_mod.Vec3i;
-pub const Vec3l = vec3_mod.Vec3l;
-pub const vec3f = vec3_mod.vec3f;
-pub const vec3d = vec3_mod.vec3d;
-pub const vec3i = vec3_mod.vec3i;
-pub const vec3l = vec3_mod.vec3l;
+// i sure love namespacing!
+pub const Vec2f = vec.Vec2f;
+pub const Vec2d = vec.Vec2d;
+pub const Vec2i = vec.Vec2i;
+pub const Vec2l = vec.Vec2l;
+pub const Vec3f = vec.Vec3f;
+pub const Vec3d = vec.Vec3d;
+pub const Vec3i = vec.Vec3i;
+pub const Vec3l = vec.Vec3l;
+pub const Vec4f = vec.Vec4f;
+pub const Vec4d = vec.Vec4d;
+pub const Vec4i = vec.Vec4i;
+pub const Vec4l = vec.Vec4l;
+pub const Rgbf = vec.Rgbf;
+pub const Rgb8 = vec.Rgb8;
+pub const Rgbaf = vec.Rgbaf;
+pub const Rgba8 = vec.Rgba8;
+pub const assertVec = vec.assertVec;
+pub const countOfVec = vec.countOfVec;
+pub const childOfVec = vec.childOfVec;
+pub const x = vec.x;
+pub const y = vec.y;
+pub const z = vec.z;
+pub const w = vec.w;
+pub const xx = vec.xx;
+pub const xy = vec.xy;
+pub const xz = vec.xz;
+pub const xw = vec.xw;
+pub const yx = vec.yx;
+pub const yy = vec.yy;
+pub const yz = vec.yz;
+pub const yw = vec.yw;
+pub const zx = vec.zx;
+pub const zy = vec.zy;
+pub const zz = vec.zz;
+pub const zw = vec.zw;
+pub const wx = vec.wx;
+pub const wy = vec.wy;
+pub const wz = vec.wz;
+pub const ww = vec.ww;
+pub const xxx = vec.xxx;
+pub const xxy = vec.xxy;
+pub const xxz = vec.xxz;
+pub const xxw = vec.xxw;
+pub const xyx = vec.xyx;
+pub const xyy = vec.xyy;
+pub const xyz = vec.xyz;
+pub const xyw = vec.xyw;
+pub const xzx = vec.xzx;
+pub const xzy = vec.xzy;
+pub const xzz = vec.xzz;
+pub const xzw = vec.xzw;
+pub const xwx = vec.xwx;
+pub const xwy = vec.xwy;
+pub const xwz = vec.xwz;
+pub const xww = vec.xww;
+pub const yxx = vec.yxx;
+pub const yxy = vec.yxy;
+pub const yxz = vec.yxz;
+pub const yxw = vec.yxw;
+pub const yyx = vec.yyx;
+pub const yyy = vec.yyy;
+pub const yyz = vec.yyz;
+pub const yyw = vec.yyw;
+pub const yzx = vec.yzx;
+pub const yzy = vec.yzy;
+pub const yzz = vec.yzz;
+pub const yzw = vec.yzw;
+pub const ywx = vec.ywx;
+pub const ywy = vec.ywy;
+pub const ywz = vec.ywz;
+pub const yww = vec.yww;
+pub const zxx = vec.zxx;
+pub const zxy = vec.zxy;
+pub const zxz = vec.zxz;
+pub const zxw = vec.zxw;
+pub const zyx = vec.zyx;
+pub const zyy = vec.zyy;
+pub const zyz = vec.zyz;
+pub const zyw = vec.zyw;
+pub const zzx = vec.zzx;
+pub const zzy = vec.zzy;
+pub const zzz = vec.zzz;
+pub const zzw = vec.zzw;
+pub const zwx = vec.zwx;
+pub const zwy = vec.zwy;
+pub const zwz = vec.zwz;
+pub const zww = vec.zww;
+pub const wxx = vec.wxx;
+pub const wxy = vec.wxy;
+pub const wxz = vec.wxz;
+pub const wxw = vec.wxw;
+pub const wyx = vec.wyx;
+pub const wyy = vec.wyy;
+pub const wyz = vec.wyz;
+pub const wyw = vec.wyw;
+pub const wzx = vec.wzx;
+pub const wzy = vec.wzy;
+pub const wzz = vec.wzz;
+pub const wzw = vec.wzw;
+pub const wwx = vec.wwx;
+pub const wwy = vec.wwy;
+pub const wwz = vec.wwz;
+pub const www = vec.www;
+pub const xxxx = vec.xxxx;
+pub const xxxy = vec.xxxy;
+pub const xxxz = vec.xxxz;
+pub const xxxw = vec.xxxw;
+pub const xxyx = vec.xxyx;
+pub const xxyy = vec.xxyy;
+pub const xxyz = vec.xxyz;
+pub const xxyw = vec.xxyw;
+pub const xxzx = vec.xxzx;
+pub const xxzy = vec.xxzy;
+pub const xxzz = vec.xxzz;
+pub const xxzw = vec.xxzw;
+pub const xxwx = vec.xxwx;
+pub const xxwy = vec.xxwy;
+pub const xxwz = vec.xxwz;
+pub const xxww = vec.xxww;
+pub const xyxx = vec.xyxx;
+pub const xyxy = vec.xyxy;
+pub const xyxz = vec.xyxz;
+pub const xyxw = vec.xyxw;
+pub const xyyx = vec.xyyx;
+pub const xyyy = vec.xyyy;
+pub const xyyz = vec.xyyz;
+pub const xyyw = vec.xyyw;
+pub const xyzx = vec.xyzx;
+pub const xyzy = vec.xyzy;
+pub const xyzz = vec.xyzz;
+pub const xyzw = vec.xyzw;
+pub const xywx = vec.xywx;
+pub const xywy = vec.xywy;
+pub const xywz = vec.xywz;
+pub const xyww = vec.xyww;
+pub const xzxx = vec.xzxx;
+pub const xzxy = vec.xzxy;
+pub const xzxz = vec.xzxz;
+pub const xzxw = vec.xzxw;
+pub const xzyx = vec.xzyx;
+pub const xzyy = vec.xzyy;
+pub const xzyz = vec.xzyz;
+pub const xzyw = vec.xzyw;
+pub const xzzx = vec.xzzx;
+pub const xzzy = vec.xzzy;
+pub const xzzz = vec.xzzz;
+pub const xzzw = vec.xzzw;
+pub const xzwx = vec.xzwx;
+pub const xzwy = vec.xzwy;
+pub const xzwz = vec.xzwz;
+pub const xzww = vec.xzww;
+pub const xwxx = vec.xwxx;
+pub const xwxy = vec.xwxy;
+pub const xwxz = vec.xwxz;
+pub const xwxw = vec.xwxw;
+pub const xwyx = vec.xwyx;
+pub const xwyy = vec.xwyy;
+pub const xwyz = vec.xwyz;
+pub const xwyw = vec.xwyw;
+pub const xwzx = vec.xwzx;
+pub const xwzy = vec.xwzy;
+pub const xwzz = vec.xwzz;
+pub const xwzw = vec.xwzw;
+pub const xwwx = vec.xwwx;
+pub const xwwy = vec.xwwy;
+pub const xwwz = vec.xwwz;
+pub const xwww = vec.xwww;
+pub const yxxx = vec.yxxx;
+pub const yxxy = vec.yxxy;
+pub const yxxz = vec.yxxz;
+pub const yxxw = vec.yxxw;
+pub const yxyx = vec.yxyx;
+pub const yxyy = vec.yxyy;
+pub const yxyz = vec.yxyz;
+pub const yxyw = vec.yxyw;
+pub const yxzx = vec.yxzx;
+pub const yxzy = vec.yxzy;
+pub const yxzz = vec.yxzz;
+pub const yxzw = vec.yxzw;
+pub const yxwx = vec.yxwx;
+pub const yxwy = vec.yxwy;
+pub const yxwz = vec.yxwz;
+pub const yxww = vec.yxww;
+pub const yyxx = vec.yyxx;
+pub const yyxy = vec.yyxy;
+pub const yyxz = vec.yyxz;
+pub const yyxw = vec.yyxw;
+pub const yyyx = vec.yyyx;
+pub const yyyy = vec.yyyy;
+pub const yyyz = vec.yyyz;
+pub const yyyw = vec.yyyw;
+pub const yyzx = vec.yyzx;
+pub const yyzy = vec.yyzy;
+pub const yyzz = vec.yyzz;
+pub const yyzw = vec.yyzw;
+pub const yywx = vec.yywx;
+pub const yywy = vec.yywy;
+pub const yywz = vec.yywz;
+pub const yyww = vec.yyww;
+pub const yzxx = vec.yzxx;
+pub const yzxy = vec.yzxy;
+pub const yzxz = vec.yzxz;
+pub const yzxw = vec.yzxw;
+pub const yzyx = vec.yzyx;
+pub const yzyy = vec.yzyy;
+pub const yzyz = vec.yzyz;
+pub const yzyw = vec.yzyw;
+pub const yzzx = vec.yzzx;
+pub const yzzy = vec.yzzy;
+pub const yzzz = vec.yzzz;
+pub const yzzw = vec.yzzw;
+pub const yzwx = vec.yzwx;
+pub const yzwy = vec.yzwy;
+pub const yzwz = vec.yzwz;
+pub const yzww = vec.yzww;
+pub const ywxx = vec.ywxx;
+pub const ywxy = vec.ywxy;
+pub const ywxz = vec.ywxz;
+pub const ywxw = vec.ywxw;
+pub const ywyx = vec.ywyx;
+pub const ywyy = vec.ywyy;
+pub const ywyz = vec.ywyz;
+pub const ywyw = vec.ywyw;
+pub const ywzx = vec.ywzx;
+pub const ywzy = vec.ywzy;
+pub const ywzz = vec.ywzz;
+pub const ywzw = vec.ywzw;
+pub const ywwx = vec.ywwx;
+pub const ywwy = vec.ywwy;
+pub const ywwz = vec.ywwz;
+pub const ywww = vec.ywww;
+pub const zxxx = vec.zxxx;
+pub const zxxy = vec.zxxy;
+pub const zxxz = vec.zxxz;
+pub const zxxw = vec.zxxw;
+pub const zxyx = vec.zxyx;
+pub const zxyy = vec.zxyy;
+pub const zxyz = vec.zxyz;
+pub const zxyw = vec.zxyw;
+pub const zxzx = vec.zxzx;
+pub const zxzy = vec.zxzy;
+pub const zxzz = vec.zxzz;
+pub const zxzw = vec.zxzw;
+pub const zxwx = vec.zxwx;
+pub const zxwy = vec.zxwy;
+pub const zxwz = vec.zxwz;
+pub const zxww = vec.zxww;
+pub const zyxx = vec.zyxx;
+pub const zyxy = vec.zyxy;
+pub const zyxz = vec.zyxz;
+pub const zyxw = vec.zyxw;
+pub const zyyx = vec.zyyx;
+pub const zyyy = vec.zyyy;
+pub const zyyz = vec.zyyz;
+pub const zyyw = vec.zyyw;
+pub const zyzx = vec.zyzx;
+pub const zyzy = vec.zyzy;
+pub const zyzz = vec.zyzz;
+pub const zyzw = vec.zyzw;
+pub const zywx = vec.zywx;
+pub const zywy = vec.zywy;
+pub const zywz = vec.zywz;
+pub const zyww = vec.zyww;
+pub const zzxx = vec.zzxx;
+pub const zzxy = vec.zzxy;
+pub const zzxz = vec.zzxz;
+pub const zzxw = vec.zzxw;
+pub const zzyx = vec.zzyx;
+pub const zzyy = vec.zzyy;
+pub const zzyz = vec.zzyz;
+pub const zzyw = vec.zzyw;
+pub const zzzx = vec.zzzx;
+pub const zzzy = vec.zzzy;
+pub const zzzz = vec.zzzz;
+pub const zzzw = vec.zzzw;
+pub const zzwx = vec.zzwx;
+pub const zzwy = vec.zzwy;
+pub const zzwz = vec.zzwz;
+pub const zzww = vec.zzww;
+pub const zwxx = vec.zwxx;
+pub const zwxy = vec.zwxy;
+pub const zwxz = vec.zwxz;
+pub const zwxw = vec.zwxw;
+pub const zwyx = vec.zwyx;
+pub const zwyy = vec.zwyy;
+pub const zwyz = vec.zwyz;
+pub const zwyw = vec.zwyw;
+pub const zwzx = vec.zwzx;
+pub const zwzy = vec.zwzy;
+pub const zwzz = vec.zwzz;
+pub const zwzw = vec.zwzw;
+pub const zwwx = vec.zwwx;
+pub const zwwy = vec.zwwy;
+pub const zwwz = vec.zwwz;
+pub const zwww = vec.zwww;
+pub const wxxx = vec.wxxx;
+pub const wxxy = vec.wxxy;
+pub const wxxz = vec.wxxz;
+pub const wxxw = vec.wxxw;
+pub const wxyx = vec.wxyx;
+pub const wxyy = vec.wxyy;
+pub const wxyz = vec.wxyz;
+pub const wxyw = vec.wxyw;
+pub const wxzx = vec.wxzx;
+pub const wxzy = vec.wxzy;
+pub const wxzz = vec.wxzz;
+pub const wxzw = vec.wxzw;
+pub const wxwx = vec.wxwx;
+pub const wxwy = vec.wxwy;
+pub const wxwz = vec.wxwz;
+pub const wxww = vec.wxww;
+pub const wyxx = vec.wyxx;
+pub const wyxy = vec.wyxy;
+pub const wyxz = vec.wyxz;
+pub const wyxw = vec.wyxw;
+pub const wyyx = vec.wyyx;
+pub const wyyy = vec.wyyy;
+pub const wyyz = vec.wyyz;
+pub const wyyw = vec.wyyw;
+pub const wyzx = vec.wyzx;
+pub const wyzy = vec.wyzy;
+pub const wyzz = vec.wyzz;
+pub const wyzw = vec.wyzw;
+pub const wywx = vec.wywx;
+pub const wywy = vec.wywy;
+pub const wywz = vec.wywz;
+pub const wyww = vec.wyww;
+pub const wzxx = vec.wzxx;
+pub const wzxy = vec.wzxy;
+pub const wzxz = vec.wzxz;
+pub const wzxw = vec.wzxw;
+pub const wzyx = vec.wzyx;
+pub const wzyy = vec.wzyy;
+pub const wzyz = vec.wzyz;
+pub const wzyw = vec.wzyw;
+pub const wzzx = vec.wzzx;
+pub const wzzy = vec.wzzy;
+pub const wzzz = vec.wzzz;
+pub const wzzw = vec.wzzw;
+pub const wzwx = vec.wzwx;
+pub const wzwy = vec.wzwy;
+pub const wzwz = vec.wzwz;
+pub const wzww = vec.wzww;
+pub const wwxx = vec.wwxx;
+pub const wwxy = vec.wwxy;
+pub const wwxz = vec.wwxz;
+pub const wwxw = vec.wwxw;
+pub const wwyx = vec.wwyx;
+pub const wwyy = vec.wwyy;
+pub const wwyz = vec.wwyz;
+pub const wwyw = vec.wwyw;
+pub const wwzx = vec.wwzx;
+pub const wwzy = vec.wwzy;
+pub const wwzz = vec.wwzz;
+pub const wwzw = vec.wwzw;
+pub const wwwx = vec.wwwx;
+pub const wwwy = vec.wwwy;
+pub const wwwz = vec.wwwz;
+pub const wwww = vec.wwww;
 
-const vec4_mod = @import("vec4.zig");
-pub const Vec4 = vec4_mod.Vec4;
-pub const Vec4f = vec4_mod.Vec4f;
-pub const Vec4d = vec4_mod.Vec4d;
-pub const Vec4i = vec4_mod.Vec4i;
-pub const Vec4l = vec4_mod.Vec4l;
-pub const vec4f = vec4_mod.vec4f;
-pub const vec4d = vec4_mod.vec4d;
-pub const vec4i = vec4_mod.vec4i;
-pub const vec4l = vec4_mod.vec4l;
-
-const vec_ops = @import("vec_ops.zig");
-
-fn SwizzleLiteralToZglmVector(comptime Src: type, comptime comps: @TypeOf(.enum_literal)) type {
-    const vec_type = @typeInfo(Src).vector.child;
-    const vec_len = @typeInfo(vec_ops.TypeFromSwizzleLiteral(vec_type, comps)).vector.len;
-    return switch (vec_len) {
-        2 => Vec2(vec_type),
-        3 => Vec3(vec_type),
-        4 => Vec4(vec_type),
-        else => unreachable,
-    };
-}
-
-/// Implements vector swizzling through major amounts of tomfoolery. For example `.xy`, `.zxy`,
-/// `.zzzw`, really any combination of xyzw that comes to mind. RGBA is also supported, for
-/// example `.abgr`.
-pub fn swizzle(
-    src: anytype,
-    comptime comps: @TypeOf(.enum_literal),
-) SwizzleLiteralToZglmVector(@TypeOf(src.raw), comps) {
-    const vec = vec_ops.swizzleImpl(src.raw, comps);
-    const vec_type = @typeInfo(@TypeOf(vec)).vector.child;
-    const vec_len = @typeInfo(@TypeOf(vec)).vector.len;
-
-    return switch (vec_len) {
-        2 => Vec2(vec_type).fromStdVector(vec),
-        3 => Vec3(vec_type).fromStdVector(vec),
-        4 => Vec4(vec_type).fromStdVector(vec),
-        else => unreachable,
-    };
-}
-
-test "vec2 -> vec2 swizzle" {
-    const v = vec2i(1, 2);
-    try testing.expectEqual(vec2i(1, 2), swizzle(v, .xy));
-    try testing.expectEqual(vec2i(2, 1), swizzle(v, .yx));
-    try testing.expectEqual(vec2i(1, 1), swizzle(v, .xx));
-    try testing.expectEqual(vec2i(2, 2), swizzle(v, .yy));
-}
-
-test "vec2 -> vec3 swizzle" {
-    const v = vec2i(2, 3);
-    const swizzelma = swizzle(v, .yxx);
-    try testing.expectEqual(vec3i(3, 2, 2), swizzelma);
-    try testing.expectEqual(vec3i(2, 3, 2), swizzle(v, .xyx));
-    try testing.expectEqual(vec3i(3, 3, 2), swizzle(v, .yyx));
-    try testing.expectEqual(vec3i(2, 3, 0), swizzle(v, .xy0));
-    try testing.expectEqual(vec3i(2, 3, 1), swizzle(v, .xy1));
-}
-
-test "vec3 -> vec2 swizzle" {
-    const v = vec3i(4, 5, 6);
-    try testing.expectEqual(vec2i(4, 5), swizzle(v, .xy));
-    try testing.expectEqual(vec2i(6, 4), swizzle(v, .zx));
-    try testing.expectEqual(vec2i(5, 5), swizzle(v, .yy));
-}
-
-test "vec3 -> vec3 swizzle" {
-    const v = vec3i(7, 8, 9);
-    try testing.expectEqual(vec3i(7, 8, 9), swizzle(v, .xyz));
-    try testing.expectEqual(vec3i(9, 8, 7), swizzle(v, .zyx));
-    try testing.expectEqual(vec3i(8, 7, 8), swizzle(v, .yxy));
-}
-
-test "vec3 -> vec4 swizzle" {
-    const v = vec3i(1, 2, 3);
-    try testing.expectEqual(vec4i(1, 2, 3, 1), swizzle(v, .xyzx));
-    try testing.expectEqual(vec4i(3, 3, 2, 1), swizzle(v, .zzyx));
-}
-
-test "vec4 swizzle" {
-    const v = vec4i(10, 20, 30, 40);
-    try testing.expectEqual(
-        vec4i(10, 20, 30, 40),
-        swizzle(v, .xyzw),
-    );
-    try testing.expectEqual(
-        vec4i(40, 30, 20, 10),
-        swizzle(v, .wzyx),
-    );
-    try testing.expectEqual(
-        vec3i(20, 20, 40),
-        swizzle(v, .yyw),
-    );
-}
-
-test "rgba swizzle" {
-    const v = vec4i(10, 20, 30, 40);
-    try testing.expectEqual(
-        vec4i(40, 30, 20, 10),
-        swizzle(v, .abgr),
-    );
-}
-
-// just making sure it compiles
-test "the vector section from the readme" {
-    const zglm = @This();
-
-    const a = zglm.vec3f(1, 2, 3);
-    const b = zglm.Vec3f.one();
-    const c = a.cross(zglm.swizzle(b, .zyx));
-
-    // "unused local constant" shut up
-    _ = c;
-}
-
-const mat4x4_mod = @import("mat4x4.zig");
-pub const Mat4x4 = mat4x4_mod.Mat4x4;
-
-// just making sure it compiles
-test "the matrix section from the readme" {
-    const zglm = @This();
-
-    const pos = zglm.Mat4x4.translate(zglm.vec3f(1, 2, 3));
-    const rot = zglm.Mat4x4.rotateX(1).mul(zglm.Mat4x4.rotateY(2));
-
-    const model = zglm.Mat4x4.identity();
-    const view = rot.mul(pos);
-    const projection = zglm.Mat4x4.perspective(zglm.deg2rad(45), 16 / 9, 0.001, 1000);
-    const mvp = projection.mul(view).mul(model);
-
-    // "unused local constant" shut up
-    _ = mvp;
-}
+pub const r = vec.r;
+pub const g = vec.g;
+pub const b = vec.b;
+pub const a = vec.a;
+pub const rr = vec.rr;
+pub const rg = vec.rg;
+pub const rb = vec.rb;
+pub const ra = vec.ra;
+pub const gr = vec.gr;
+pub const gg = vec.gg;
+pub const gb = vec.gb;
+pub const ga = vec.ga;
+pub const br = vec.br;
+pub const bg = vec.bg;
+pub const bb = vec.bb;
+pub const ba = vec.ba;
+pub const ar = vec.ar;
+pub const ag = vec.ag;
+pub const ab = vec.ab;
+pub const aa = vec.aa;
+pub const rrr = vec.rrr;
+pub const rrg = vec.rrg;
+pub const rrb = vec.rrb;
+pub const rra = vec.rra;
+pub const rgr = vec.rgr;
+pub const rgg = vec.rgg;
+pub const rgb = vec.rgb;
+pub const rga = vec.rga;
+pub const rbr = vec.rbr;
+pub const rbg = vec.rbg;
+pub const rbb = vec.rbb;
+pub const rba = vec.rba;
+pub const rar = vec.rar;
+pub const rag = vec.rag;
+pub const rab = vec.rab;
+pub const raa = vec.raa;
+pub const grr = vec.grr;
+pub const grg = vec.grg;
+pub const grb = vec.grb;
+pub const gra = vec.gra;
+pub const ggr = vec.ggr;
+pub const ggg = vec.ggg;
+pub const ggb = vec.ggb;
+pub const gga = vec.gga;
+pub const gbr = vec.gbr;
+pub const gbg = vec.gbg;
+pub const gbb = vec.gbb;
+pub const gba = vec.gba;
+pub const gar = vec.gar;
+pub const gag = vec.gag;
+pub const gab = vec.gab;
+pub const gaa = vec.gaa;
+pub const brr = vec.brr;
+pub const brg = vec.brg;
+pub const brb = vec.brb;
+pub const bra = vec.bra;
+pub const bgr = vec.bgr;
+pub const bgg = vec.bgg;
+pub const bgb = vec.bgb;
+pub const bga = vec.bga;
+pub const bbr = vec.bbr;
+pub const bbg = vec.bbg;
+pub const bbb = vec.bbb;
+pub const bba = vec.bba;
+pub const bar = vec.bar;
+pub const bag = vec.bag;
+pub const bab = vec.bab;
+pub const baa = vec.baa;
+pub const arr = vec.arr;
+pub const arg = vec.arg;
+pub const arb = vec.arb;
+pub const ara = vec.ara;
+pub const agr = vec.agr;
+pub const agg = vec.agg;
+pub const agb = vec.agb;
+pub const aga = vec.aga;
+pub const abr = vec.abr;
+pub const abg = vec.abg;
+pub const abb = vec.abb;
+pub const aba = vec.aba;
+pub const aar = vec.aar;
+pub const aag = vec.aag;
+pub const aab = vec.aab;
+pub const aaa = vec.aaa;
+pub const rrrr = vec.rrrr;
+pub const rrrg = vec.rrrg;
+pub const rrrb = vec.rrrb;
+pub const rrra = vec.rrra;
+pub const rrgr = vec.rrgr;
+pub const rrgg = vec.rrgg;
+pub const rrgb = vec.rrgb;
+pub const rrga = vec.rrga;
+pub const rrbr = vec.rrbr;
+pub const rrbg = vec.rrbg;
+pub const rrbb = vec.rrbb;
+pub const rrba = vec.rrba;
+pub const rrar = vec.rrar;
+pub const rrag = vec.rrag;
+pub const rrab = vec.rrab;
+pub const rraa = vec.rraa;
+pub const rgrr = vec.rgrr;
+pub const rgrg = vec.rgrg;
+pub const rgrb = vec.rgrb;
+pub const rgra = vec.rgra;
+pub const rggr = vec.rggr;
+pub const rggg = vec.rggg;
+pub const rggb = vec.rggb;
+pub const rgga = vec.rgga;
+pub const rgbr = vec.rgbr;
+pub const rgbg = vec.rgbg;
+pub const rgbb = vec.rgbb;
+pub const rgba = vec.rgba;
+pub const rgar = vec.rgar;
+pub const rgag = vec.rgag;
+pub const rgab = vec.rgab;
+pub const rgaa = vec.rgaa;
+pub const rbrr = vec.rbrr;
+pub const rbrg = vec.rbrg;
+pub const rbrb = vec.rbrb;
+pub const rbra = vec.rbra;
+pub const rbgr = vec.rbgr;
+pub const rbgg = vec.rbgg;
+pub const rbgb = vec.rbgb;
+pub const rbga = vec.rbga;
+pub const rbbr = vec.rbbr;
+pub const rbbg = vec.rbbg;
+pub const rbbb = vec.rbbb;
+pub const rbba = vec.rbba;
+pub const rbar = vec.rbar;
+pub const rbag = vec.rbag;
+pub const rbab = vec.rbab;
+pub const rbaa = vec.rbaa;
+pub const rarr = vec.rarr;
+pub const rarg = vec.rarg;
+pub const rarb = vec.rarb;
+pub const rara = vec.rara;
+pub const ragr = vec.ragr;
+pub const ragg = vec.ragg;
+pub const ragb = vec.ragb;
+pub const raga = vec.raga;
+pub const rabr = vec.rabr;
+pub const rabg = vec.rabg;
+pub const rabb = vec.rabb;
+pub const raba = vec.raba;
+pub const raar = vec.raar;
+pub const raag = vec.raag;
+pub const raab = vec.raab;
+pub const raaa = vec.raaa;
+pub const grrr = vec.grrr;
+pub const grrg = vec.grrg;
+pub const grrb = vec.grrb;
+pub const grra = vec.grra;
+pub const grgr = vec.grgr;
+pub const grgg = vec.grgg;
+pub const grgb = vec.grgb;
+pub const grga = vec.grga;
+pub const grbr = vec.grbr;
+pub const grbg = vec.grbg;
+pub const grbb = vec.grbb;
+pub const grba = vec.grba;
+pub const grar = vec.grar;
+pub const grag = vec.grag;
+pub const grab = vec.grab;
+pub const graa = vec.graa;
+pub const ggrr = vec.ggrr;
+pub const ggrg = vec.ggrg;
+pub const ggrb = vec.ggrb;
+pub const ggra = vec.ggra;
+pub const gggr = vec.gggr;
+pub const gggg = vec.gggg;
+pub const gggb = vec.gggb;
+pub const ggga = vec.ggga;
+pub const ggbr = vec.ggbr;
+pub const ggbg = vec.ggbg;
+pub const ggbb = vec.ggbb;
+pub const ggba = vec.ggba;
+pub const ggar = vec.ggar;
+pub const ggag = vec.ggag;
+pub const ggab = vec.ggab;
+pub const ggaa = vec.ggaa;
+pub const gbrr = vec.gbrr;
+pub const gbrg = vec.gbrg;
+pub const gbrb = vec.gbrb;
+pub const gbra = vec.gbra;
+pub const gbgr = vec.gbgr;
+pub const gbgg = vec.gbgg;
+pub const gbgb = vec.gbgb;
+pub const gbga = vec.gbga;
+pub const gbbr = vec.gbbr;
+pub const gbbg = vec.gbbg;
+pub const gbbb = vec.gbbb;
+pub const gbba = vec.gbba;
+pub const gbar = vec.gbar;
+pub const gbag = vec.gbag;
+pub const gbab = vec.gbab;
+pub const gbaa = vec.gbaa;
+pub const garr = vec.garr;
+pub const garg = vec.garg;
+pub const garb = vec.garb;
+pub const gara = vec.gara;
+pub const gagr = vec.gagr;
+pub const gagg = vec.gagg;
+pub const gagb = vec.gagb;
+pub const gaga = vec.gaga;
+pub const gabr = vec.gabr;
+pub const gabg = vec.gabg;
+pub const gabb = vec.gabb;
+pub const gaba = vec.gaba;
+pub const gaar = vec.gaar;
+pub const gaag = vec.gaag;
+pub const gaab = vec.gaab;
+pub const gaaa = vec.gaaa;
+pub const brrr = vec.brrr;
+pub const brrg = vec.brrg;
+pub const brrb = vec.brrb;
+pub const brra = vec.brra;
+pub const brgr = vec.brgr;
+pub const brgg = vec.brgg;
+pub const brgb = vec.brgb;
+pub const brga = vec.brga;
+pub const brbr = vec.brbr;
+pub const brbg = vec.brbg;
+pub const brbb = vec.brbb;
+pub const brba = vec.brba;
+pub const brar = vec.brar;
+pub const brag = vec.brag;
+pub const brab = vec.brab;
+pub const braa = vec.braa;
+pub const bgrr = vec.bgrr;
+pub const bgrg = vec.bgrg;
+pub const bgrb = vec.bgrb;
+pub const bgra = vec.bgra;
+pub const bggr = vec.bggr;
+pub const bggg = vec.bggg;
+pub const bggb = vec.bggb;
+pub const bgga = vec.bgga;
+pub const bgbr = vec.bgbr;
+pub const bgbg = vec.bgbg;
+pub const bgbb = vec.bgbb;
+pub const bgba = vec.bgba;
+pub const bgar = vec.bgar;
+pub const bgag = vec.bgag;
+pub const bgab = vec.bgab;
+pub const bgaa = vec.bgaa;
+pub const bbrr = vec.bbrr;
+pub const bbrg = vec.bbrg;
+pub const bbrb = vec.bbrb;
+pub const bbra = vec.bbra;
+pub const bbgr = vec.bbgr;
+pub const bbgg = vec.bbgg;
+pub const bbgb = vec.bbgb;
+pub const bbga = vec.bbga;
+pub const bbbr = vec.bbbr;
+pub const bbbg = vec.bbbg;
+pub const bbbb = vec.bbbb;
+pub const bbba = vec.bbba;
+pub const bbar = vec.bbar;
+pub const bbag = vec.bbag;
+pub const bbab = vec.bbab;
+pub const bbaa = vec.bbaa;
+pub const barr = vec.barr;
+pub const barg = vec.barg;
+pub const barb = vec.barb;
+pub const bara = vec.bara;
+pub const bagr = vec.bagr;
+pub const bagg = vec.bagg;
+pub const bagb = vec.bagb;
+pub const baga = vec.baga;
+pub const babr = vec.babr;
+pub const babg = vec.babg;
+pub const babb = vec.babb;
+pub const baba = vec.baba;
+pub const baar = vec.baar;
+pub const baag = vec.baag;
+pub const baab = vec.baab;
+pub const baaa = vec.baaa;
+pub const arrr = vec.arrr;
+pub const arrg = vec.arrg;
+pub const arrb = vec.arrb;
+pub const arra = vec.arra;
+pub const argr = vec.argr;
+pub const argg = vec.argg;
+pub const argb = vec.argb;
+pub const arga = vec.arga;
+pub const arbr = vec.arbr;
+pub const arbg = vec.arbg;
+pub const arbb = vec.arbb;
+pub const arba = vec.arba;
+pub const arar = vec.arar;
+pub const arag = vec.arag;
+pub const arab = vec.arab;
+pub const araa = vec.araa;
+pub const agrr = vec.agrr;
+pub const agrg = vec.agrg;
+pub const agrb = vec.agrb;
+pub const agra = vec.agra;
+pub const aggr = vec.aggr;
+pub const aggg = vec.aggg;
+pub const aggb = vec.aggb;
+pub const agga = vec.agga;
+pub const agbr = vec.agbr;
+pub const agbg = vec.agbg;
+pub const agbb = vec.agbb;
+pub const agba = vec.agba;
+pub const agar = vec.agar;
+pub const agag = vec.agag;
+pub const agab = vec.agab;
+pub const agaa = vec.agaa;
+pub const abrr = vec.abrr;
+pub const abrg = vec.abrg;
+pub const abrb = vec.abrb;
+pub const abra = vec.abra;
+pub const abgr = vec.abgr;
+pub const abgg = vec.abgg;
+pub const abgb = vec.abgb;
+pub const abga = vec.abga;
+pub const abbr = vec.abbr;
+pub const abbg = vec.abbg;
+pub const abbb = vec.abbb;
+pub const abba = vec.abba;
+pub const abar = vec.abar;
+pub const abag = vec.abag;
+pub const abab = vec.abab;
+pub const abaa = vec.abaa;
+pub const aarr = vec.aarr;
+pub const aarg = vec.aarg;
+pub const aarb = vec.aarb;
+pub const aara = vec.aara;
+pub const aagr = vec.aagr;
+pub const aagg = vec.aagg;
+pub const aagb = vec.aagb;
+pub const aaga = vec.aaga;
+pub const aabr = vec.aabr;
+pub const aabg = vec.aabg;
+pub const aabb = vec.aabb;
+pub const aaba = vec.aaba;
+pub const aaar = vec.aaar;
+pub const aaag = vec.aaag;
+pub const aaab = vec.aaab;
+pub const aaaa = vec.aaaa;
 
 test {
     std.testing.refAllDecls(@This());
