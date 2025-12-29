@@ -204,7 +204,7 @@ pub const Mat4x4 = struct {
 
     pub fn orthonormalize(mat: Mat4x4) Mat4x4 {
         var new = mat;
-        var s = 1;
+        var s: f32 = 1;
         new = new.raw[2].normalize();
 
         s = new.raw[1].dot(new.raw[2]);
