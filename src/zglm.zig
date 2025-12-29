@@ -66,9 +66,14 @@ pub fn inverseSqrt(n: anytype) @TypeOf(x) {
 /// absolute difference between them is less or equal than `zglm.eps(T)`.
 ///
 /// NaN values are never considered equal to any value.
-pub fn approxEq(left: anytype, right: anytype) bool {
+pub fn approxEql(left: anytype, right: anytype) bool {
     if (@TypeOf(left) != @TypeOf(right)) {
-        @compileError("left and right must be the same type");
+        // comptime_float will just coerce to the right type anyway
+        if (@typeInfo(@TypeOf(left)) != .comptime_float and
+            @typeInfo(@TypeOf(right)) != .comptime_float)
+        {
+            @compileError("left and right must be the same type");
+        }
     }
 
     const epsilon = switch (@typeInfo(@TypeOf(left))) {
@@ -79,7 +84,24 @@ pub fn approxEq(left: anytype, right: anytype) bool {
     return std.math.approxEqAbs(@TypeOf(left), left, right, epsilon);
 }
 
-const vec = @import("swizzle.zig");
+/// Performs an approximate comparison of two floating point values x and y. Returns true if the
+/// absolute difference between them is less or equal than `epsilon`.
+///
+/// NaN values are never considered equal to any value.
+pub fn approxEqlEps(left: anytype, right: anytype, epsilon: @TypeOf(left, right)) bool {
+    if (@TypeOf(left) != @TypeOf(right)) {
+        // comptime_float will just coerce to the right type anyway
+        if (@typeInfo(@TypeOf(left)) != .comptime_float and
+            @typeInfo(@TypeOf(right)) != .comptime_float)
+        {
+            @compileError("left and right must be the same type");
+        }
+    }
+
+    return std.math.approxEqAbs(@TypeOf(left), left, right, epsilon);
+}
+
+const vec = @import("vec.zig");
 pub const Vec2f = vec.Vec2f;
 pub const Vec2d = vec.Vec2d;
 pub const Vec2i = vec.Vec2i;
@@ -92,13 +114,21 @@ pub const Vec4f = vec.Vec4f;
 pub const Vec4d = vec.Vec4d;
 pub const Vec4i = vec.Vec4i;
 pub const Vec4l = vec.Vec4l;
-pub const Rgbf = swizzle.rgbf;
-pub const Rgb8 = swizzle.rgb8;
-pub const Rgbaf = swizzle.rgbaf;
-pub const Rgba8 = swizzle.rgba8;
-pub const assertVec = swizzle.assertVec;
+pub const Rgbf = vec.Rgbf;
+pub const Rgb8 = vec.Rgb8;
+pub const Rgbaf = vec.Rgbaf;
+pub const Rgba8 = vec.Rgba8;
+pub const assertVec = vec.assertVec;
 pub const countOfVec = vec.countOfVec;
 pub const childOfVec = vec.childOfVec;
+pub const assertFloatVec = vec.assertFloatVec;
+pub const vecApproxEql = vec.approxEql;
+pub const vecExactlyEql = vec.exactlyEql;
+pub const dot = vec.dot;
+pub const length = vec.length;
+pub const distance = vec.distance;
+pub const cross = vec.cross;
+pub const normalize = vec.normalize;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");

@@ -2,7 +2,7 @@
 
 [Zig](https://ziglang.org) OpenGL Mathematics library. Only tested on Zig v0.15.2.
 
-As the GL in the name implies, zglm is intended to be similar to GLSL and work with OpenGL conventions, that is, column-major matrices, right-handed coordinates, +Y up, and NDC ranging from -1 to 1.
+As the GL in the name implies, zglm is intended to be similar to GLSL, [GLM](https://github.com/g-truc/glm), and work with OpenGL conventions, that is, column-major matrices, right-handed coordinates, +Y up, and NDC ranging from -1 to 1. All rotations are in radians unless otherwise noted.
 
 ## Getting started
 
