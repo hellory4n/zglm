@@ -199,6 +199,7 @@ pub const Mat4x4 = struct {
         new.raw[3].raw[1] = (mat.nth(0, 0) * c[3] - mat.nth(0, 1) * c[1] + mat.nth(0, 2) * c[0]) * idet;
         new.raw[3].raw[2] = (-mat.nth(3, 0) * s[3] + mat.nth(3, 1) * s[1] - mat.nth(3, 2) * s[0]) * idet;
         new.raw[3].raw[3] = (mat.nth(2, 0) * s[3] - mat.nth(2, 1) * s[1] + mat.nth(2, 2) * s[0]) * idet;
+        return new;
     }
 
     /// Returns an orthographic projection matrix with OpenGL conventions.
