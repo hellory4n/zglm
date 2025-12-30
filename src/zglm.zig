@@ -148,24 +148,90 @@ pub const cross = vec.cross;
 pub const normalize = vec.normalize;
 
 const mat = @import("mat.zig");
+pub const Mat4x4 = mat.Mat4x4;
 pub const Mat4x4f = mat.Mat4x4f;
+pub const Mat4x4d = mat.Mat4x4d;
 // more glsl-ification
 pub const zero4x4f = mat.Mat4x4f.zero;
 pub const identity4x4f = mat.Mat4x4f.identity;
-// TODO make these generic once there's more matrix types
-pub const mulmat = mat.Mat4x4f.mul;
-pub const mulmatv = mat.Mat4x4f.mulv;
-pub const mulmats = mat.Mat4x4f.muls;
-pub const determinant = mat.Mat4x4f.determinant;
-pub const inverse = mat.Mat4x4f.inverse;
-pub const translate = mat.Mat4x4f.translate;
-pub const rotate = mat.Mat4x4f.rotate;
-pub const perspectiveRhNo = mat.Mat4x4f.perspectiveRhNo;
-pub const perspective = mat.Mat4x4f.perspective;
-pub const orthoRhNo = mat.Mat4x4f.orthoRhNo;
-pub const ortho = mat.Mat4x4f.ortho;
-pub const project = mat.Mat4x4f.project;
-pub const unproject = mat.Mat4x4f.unproject;
+pub const zero4x4d = mat.Mat4x4d.zero;
+pub const identity4x4d = mat.Mat4x4d.identity;
+
+/// Multiplies two matrices together. Order is the same as `left * right` in glm.
+pub fn mulmat(left: anytype, right: @TypeOf(left)) @TypeOf(left) {
+    return switch (@TypeOf(left)) {
+        Mat4x4f => mat.Mat4x4f.mul(left, right),
+        Mat4x4d => mat.Mat4x4d.mul(left, right),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Multiplies a vector by a matrix. Order is the same as `m * v` in glm.
+pub fn mulmatv(m: anytype, v: anytype) @TypeOf(v) {
+    return switch (@TypeOf(m)) {
+        Mat4x4f => mat.Mat4x4f.mulv(m, v),
+        Mat4x4d => mat.Mat4x4d.mulv(m, v),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Scales M by S.
+pub fn mulmats(m: anytype, s: anytype) @TypeOf(m) {
+    return switch (@TypeOf(m)) {
+        Mat4x4f => mat.Mat4x4f.muls(m, s),
+        Mat4x4d => mat.Mat4x4d.muls(m, s),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Returns the determinant of M
+pub fn determinant(m: anytype) @TypeOf(m) {
+    return switch (@TypeOf(m)) {
+        Mat4x4f => mat.Mat4x4f.determinant(m),
+        Mat4x4d => mat.Mat4x4d.determinant(m),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Returns the inverse of M.
+pub fn inverse(m: anytype) @TypeOf(m) {
+    return switch (@TypeOf(m)) {
+        Mat4x4f => mat.Mat4x4f.inverse(m),
+        Mat4x4d => mat.Mat4x4d.inverse(m),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Returns base translated by pos
+pub fn translate(base: anytype, pos: anytype) @TypeOf(base) {
+    return switch (@TypeOf(base)) {
+        Mat4x4f => mat.Mat4x4f.translate(base, pos),
+        Mat4x4d => mat.Mat4x4d.translate(base, pos),
+        else => @compileError("unsupported type"),
+    };
+}
+
+/// Returns base rotated by angle (scalar) at the axis specified (axis should be normalized)
+pub fn rotate(base: anytype, angle: anytype, axis: anytype) @TypeOf(base) {
+    return switch (@TypeOf(base)) {
+        Mat4x4f => mat.Mat4x4f.rotate(base, angle, axis),
+        Mat4x4d => mat.Mat4x4d.rotate(base, angle, axis),
+        else => @compileError("unsupported type"),
+    };
+}
+
+pub const perspectiveRhNof = mat.Mat4x4f.perspectiveRhNo;
+pub const perspectiveRhNod = mat.Mat4x4d.perspectiveRhNo;
+pub const perspectivef = mat.Mat4x4f.perspective;
+pub const perspectived = mat.Mat4x4d.perspective;
+pub const orthoRhNof = mat.Mat4x4f.orthoRhNo;
+pub const orthoRhNod = mat.Mat4x4d.orthoRhNo;
+pub const orthof = mat.Mat4x4f.ortho;
+pub const orthod = mat.Mat4x4d.ortho;
+pub const projectf = mat.Mat4x4f.project;
+pub const projectd = mat.Mat4x4d.project;
+pub const unprojectf = mat.Mat4x4f.unproject;
+pub const unprojectd = mat.Mat4x4d.unproject;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");
@@ -868,7 +934,7 @@ test "the example from the readme" {
     const view_rot = zglm.identity4x4f().rotate(zglm.radians(78), .{ 0, 1, 0 });
     const view_pos = zglm.identity4x4f().translate(.{ 14, 4, -58 });
     const view = view_rot.mul(view_pos);
-    const proj = zglm.perspective(.{
+    const proj = zglm.perspectivef(.{
         .fovy_rad = zglm.radians(70),
         .aspect_ratio = 16.0 / 9.0,
         .z_near = 0.001,
