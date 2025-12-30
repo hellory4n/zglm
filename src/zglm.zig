@@ -123,12 +123,16 @@ pub const countOfVec = vec.countOfVec;
 pub const childOfVec = vec.childOfVec;
 pub const assertFloatVec = vec.assertFloatVec;
 pub const vecApproxEql = vec.approxEql;
+pub const vecApproxEqlEps = vec.approxEqlEps;
 pub const vecExactlyEql = vec.exactlyEql;
 pub const dot = vec.dot;
 pub const length = vec.length;
 pub const distance = vec.distance;
 pub const cross = vec.cross;
 pub const normalize = vec.normalize;
+
+const mat = @import("mat.zig");
+pub const Mat4x4f = mat.Mat4x4f;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");

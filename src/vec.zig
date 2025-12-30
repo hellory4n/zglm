@@ -1,5 +1,5 @@
-const zglm = @import("zglm.zig");
 const t = @import("std").testing;
+const zglm = @import("zglm.zig");
 
 pub const Vec2f = @Vector(2, f32);
 pub const Vec2d = @Vector(2, f64);
@@ -165,4 +165,8 @@ test "vector cross product" {
         Vec3f{ -3.52, 18.24, -3.52 },
         eps,
     ));
+}
+
+test "vector distance" {
+    try t.expectApproxEqAbs(distance(mate3, Vec3f{ 6.5, 2.2, 4.9 }), 2.26274, eps);
 }
