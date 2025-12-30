@@ -192,10 +192,10 @@ pub fn Mat4x4(comptime Type: type) type {
 
         /// Returns an OpenGL-style perspective projection matrix.
         pub fn perspectiveRhNo(v: struct {
-            fovy_rad: f32,
-            aspect_ratio: f32,
-            z_near: f32,
-            z_far: f32,
+            fovy_rad: T,
+            aspect_ratio: T,
+            z_near: T,
+            z_far: T,
         }) Matrix {
             const tan_half_fovy = zglm.tan(v.fovy_rad / 2);
 
