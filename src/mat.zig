@@ -2,6 +2,7 @@ const t = @import("std").testing;
 const zglm = @import("zglm.zig");
 const Vec4f = zglm.Vec4f;
 const Vec3f = zglm.Vec3f;
+const Vec2f = zglm.Vec2f;
 
 /// A 4x4 column-major matrix of float32s.
 pub const Mat4x4f = struct {
@@ -139,6 +140,149 @@ pub const Mat4x4f = struct {
 
         return inv.muls(one_over_determinant);
     }
+
+    /// Returns base translated by pos
+    pub fn translate(base: Mat4x4f, pos: Vec3f) Mat4x4f {
+        var new = base;
+        new.raw[3] =
+            base.raw[0] * @as(Vec4f, @splat(pos[0])) +
+            base.raw[1] * @as(Vec4f, @splat(pos[1])) +
+            base.raw[2] * @as(Vec4f, @splat(pos[2])) +
+            base.raw[3];
+        return new;
+    }
+
+    /// Returns base rotated by angle at the axis specified (axis should be normalized)
+    pub fn rotate(base: Mat4x4f, angle: f32, axis: Vec3f) Mat4x4f {
+        const c = zglm.cos(angle);
+        const s = zglm.sin(angle);
+
+        const axisreal = zglm.normalize(axis);
+        const temp = axisreal * @as(Vec3f, @splat(1 - c));
+
+        var rot: Mat4x4f = undefined;
+        rot.raw[0][0] = c + temp[0] * axisreal[0];
+        rot.raw[0][1] = temp[0] * axisreal[1] + s * axisreal[2];
+        rot.raw[0][2] = temp[0] * axisreal[2] - s * axisreal[1];
+
+        rot.raw[1][0] = temp[1] * axisreal[0] - s * axisreal[2];
+        rot.raw[1][1] = c + temp[1] * axisreal[1];
+        rot.raw[1][2] = temp[1] * axisreal[2] + s * axisreal[0];
+
+        rot.raw[2][0] = temp[2] * axisreal[0] + s * axisreal[1];
+        rot.raw[2][1] = temp[2] * axisreal[1] - s * axisreal[0];
+        rot.raw[2][2] = c + temp[2] * axisreal[2];
+
+        var result: Mat4x4f = undefined;
+        result.raw[0] =
+            base.raw[0] * @as(Vec4f, @splat(rot.raw[0][0])) +
+            base.raw[1] * @as(Vec4f, @splat(rot.raw[0][1])) +
+            base.raw[2] * @as(Vec4f, @splat(rot.raw[0][2]));
+        result.raw[1] =
+            base.raw[0] * @as(Vec4f, @splat(rot.raw[1][0])) +
+            base.raw[1] * @as(Vec4f, @splat(rot.raw[1][1])) +
+            base.raw[2] * @as(Vec4f, @splat(rot.raw[1][2]));
+        result.raw[2] =
+            base.raw[0] * @as(Vec4f, @splat(rot.raw[2][0])) +
+            base.raw[1] * @as(Vec4f, @splat(rot.raw[2][1])) +
+            base.raw[2] * @as(Vec4f, @splat(rot.raw[2][2]));
+        result.raw[3] = base.raw[3];
+        return result;
+    }
+
+    /// Returns an OpenGL-style perspective projection matrix.
+    pub fn perspectiveRhNo(v: struct {
+        fovy_rad: f32,
+        aspect_ratio: f32,
+        z_near: f32,
+        z_far: f32,
+    }) Mat4x4f {
+        const tan_half_fovy = zglm.tan(v.fovy_rad / 2);
+
+        var result = Mat4x4f.zero();
+        result.raw[0][0] = 1.0 / (v.aspect_ratio * tan_half_fovy);
+        result.raw[1][1] = 1.0 / tan_half_fovy;
+        result.raw[2][2] = -(v.z_far + v.z_near) / (v.z_far - v.z_near);
+        result.raw[2][3] = -1.0;
+        result.raw[3][2] = -(2.0 * v.z_far * v.z_near) / (v.z_far - v.z_near);
+        return result;
+    }
+    pub const perspective = perspectiveRhNo;
+
+    /// Returns an OpenGL-style orthographic projection matrix.
+    pub fn orthoRhNo(v: struct {
+        left: f32,
+        right: f32,
+        bottom: f32,
+        top: f32,
+        z_near: f32,
+        z_far: f32,
+    }) Mat4x4f {
+        var result = Mat4x4f.identity();
+        result.raw[0][0] = 2 / (v.right - v.left);
+        result.raw[1][1] = 2 / (v.top - v.bottom);
+        result.raw[2][2] = -2 / (v.z_far - v.z_near);
+        result.raw[3][0] = -(v.right + v.left) / (v.right - v.left);
+        result.raw[3][1] = -(v.top + v.bottom) / (v.top - v.bottom);
+        result.raw[3][2] = -(v.z_far + v.z_near) / (v.z_far - v.z_near);
+        return result;
+    }
+    pub const ortho = orthoRhNo;
+
+    /// Maps object coordinates to window coordinates
+    pub fn project(v: struct {
+        pos: Vec3f,
+        mvp: Mat4x4f,
+        viewport_pos: Vec2f,
+        viewport_size: Vec2f,
+    }) Vec3f {
+        const viewport = Vec4f{
+            v.viewport_pos[0],
+            v.viewport_pos[1],
+            v.viewport_size[0],
+            v.viewport_size[1],
+        };
+        var pos4 = Vec4f{ v.pos[0], v.pos[1], v.pos[2], 1 };
+
+        pos4 = v.mvp.mulv(pos4);
+        pos4 *= @splat(1.0 / pos4[3]);
+        pos4 *= @splat(0.5);
+        pos4 += @splat(0.5);
+
+        return .{
+            pos4[0] * viewport[2] + viewport[0],
+            pos4[1] * viewport[3] + viewport[1],
+            pos4[2],
+        };
+    }
+
+    /// Maps the specified viewport coordinates into the specified space, depending on the matrix:
+    /// - inverse projection matrix = view space
+    /// - inverse view projection matrix = world space
+    /// - inverse mvp matrix = object space
+    pub fn unproject(v: struct {
+        pos: Vec3f,
+        inv_mat: Mat4x4f,
+        viewport_pos: Vec2f,
+        viewport_size: Vec2f,
+    }) Vec3f {
+        const viewport = Vec4f{
+            v.viewport_pos[0],
+            v.viewport_pos[1],
+            v.viewport_size[0],
+            v.viewport_size[1],
+        };
+
+        var vec = Vec4f{
+            2.0 * (v.pos[0] - viewport[0]) / viewport[2] - 1.0,
+            2.0 * (v.pos[1] - viewport[1]) / viewport[3] - 1.0,
+            2.0 * v.pos[2] - 1.0,
+            1.0,
+        };
+        vec = v.inv_mat.mulv(vec);
+        vec *= @splat(1.0 / vec[3]);
+        return Vec3f{ vec[0], vec[1], vec[2] };
+    }
 };
 
 const eps = 0.0001;
@@ -250,4 +394,114 @@ test "matrix transpose" {
         .{ 3, 7, 11, 15 },
     );
     try expectMatEql(a.transpose(), expected);
+}
+
+test "translate matrix" {
+    const a = Mat4x4f.identity();
+    const b = Vec3f{ 4.9, 2.2, 6.5 };
+    const expected = Mat4x4f.init(
+        .{ 1, 0, 0, 0 },
+        .{ 0, 1, 0, 0 },
+        .{ 0, 0, 1, 0 },
+        .{ 4.9, 2.2, 6.5, 1 },
+    );
+    try expectMatEql(a.translate(b), expected);
+}
+
+test "rotate matrix" {
+    const a = Mat4x4f.identity();
+    const b = zglm.degrees(45);
+    const c = Vec3f{ 1, 0, 0 };
+    const expected = Mat4x4f.init(
+        .{ 1, 0, 0, 0 },
+        .{ 0, -0.591797, 0.806087, 0 },
+        .{ 0, -0.806087, -0.591797, 0 },
+        .{ 0, 0, 0, 1 },
+    );
+    try expectMatEql(a.rotate(b, c), expected);
+}
+
+test "perspective matrix" {
+    const expected = Mat4x4f.init(
+        .{ 0.803333, 0, 0, 0 },
+        .{ 0, 1.42815, 0, 0 },
+        .{ 0, 0, -1, -1 },
+        .{ 0, 0, -0.002, 0 },
+    );
+    try expectMatEql(Mat4x4f.perspective(.{
+        .fovy_rad = zglm.radians(70),
+        .aspect_ratio = 16.0 / 9.0,
+        .z_near = 0.001,
+        .z_far = 1000,
+    }), expected);
+}
+
+test "orthographic matrix" {
+    const expected = Mat4x4f.init(
+        .{ 0.2, 0, 0, 0 },
+        .{ 0, 0.2, 0, 0 },
+        .{ 0, 0, -0.002, 0 },
+        .{ 0, 0, -1, 1 },
+    );
+    try expectMatEql(Mat4x4f.ortho(.{
+        .left = -5,
+        .right = 5,
+        .bottom = -5,
+        .top = 5,
+        .z_near = 0.001,
+        .z_far = 1000,
+    }), expected);
+}
+
+test "mvp like" {
+    const model = Mat4x4f.identity().rotate(zglm.radians(45), .{ 1, 0, 0 });
+    const view_rot = Mat4x4f.identity().rotate(zglm.radians(78), .{ 0, 1, 0 });
+    const view_pos = Mat4x4f.identity().translate(.{ 14, 4, -58 });
+    const view = view_rot.mul(view_pos);
+    const proj = Mat4x4f.perspective(.{
+        .fovy_rad = zglm.radians(70),
+        .aspect_ratio = 16.0 / 9.0,
+        .z_near = 0.001,
+        .z_far = 1000,
+    });
+    const mvp = proj.mul(view).mul(model);
+
+    const expected = Mat4x4f.init(
+        .{ 0.167022, 0, 0.978149, 0.978148 },
+        .{ 0.555629, 1.00985, -0.147016, -0.147016 },
+        .{ 0.555629, -1.00985, -0.147016, -0.147016 },
+        .{ -43.2368, 5.71259, 25.751, 25.7529 },
+    );
+    try expectMatEql(mvp, expected);
+}
+
+test "unprojected -> projected -> unprojected" {
+    const model = Mat4x4f.identity().rotate(zglm.radians(45), .{ 1, 0, 0 });
+    const view_rot = Mat4x4f.identity().rotate(zglm.radians(78), .{ 0, 1, 0 });
+    const view_pos = Mat4x4f.identity().translate(.{ 14, 4, -58 });
+    const view = view_rot.mul(view_pos);
+    const proj = Mat4x4f.perspective(.{
+        .fovy_rad = zglm.radians(70),
+        .aspect_ratio = 16.0 / 9.0,
+        .z_near = 0.001,
+        .z_far = 1000,
+    });
+    const mvp = proj.mul(view).mul(model);
+
+    // projected to unprojected should be the same as the original
+    const src = Vec3f{ 1.2, 3.4, 5.6 };
+    const projected = Mat4x4f.project(.{
+        .pos = src,
+        .mvp = mvp,
+        .viewport_pos = @splat(0),
+        .viewport_size = .{ 1920, 1080 },
+    });
+    const unprojected = Mat4x4f.unproject(.{
+        .pos = projected,
+        .inv_mat = mvp.inverse(),
+        .viewport_pos = @splat(0),
+        .viewport_size = .{ 1920, 1080 },
+    });
+    // a lot of precision is lost
+    try t.expect(zglm.vecApproxEqlEps(src, unprojected, 0.2));
 }

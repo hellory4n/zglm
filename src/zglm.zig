@@ -62,6 +62,22 @@ pub fn inverseSqrt(n: anytype) @TypeOf(x) {
     return 1 / sqrt(n);
 }
 
+/// Returns true if all components of a vector of bools are true
+pub fn all(v: anytype) bool {
+    if (childOfVec(@TypeOf(v)) != bool) {
+        @compileError("expected vector of bools, got " ++ @typeName(@TypeOf(v)));
+    }
+    return @reduce(.And, v);
+}
+
+/// Returns true if any of the components of a vector of bools are true
+pub fn any(v: anytype) bool {
+    if (childOfVec(@TypeOf(v)) != bool) {
+        @compileError("expected vector of bools, got " ++ @typeName(@TypeOf(v)));
+    }
+    return @reduce(.Or, v);
+}
+
 /// Performs an approximate comparison of two floating point values x and y. Returns true if the
 /// absolute difference between them is less or equal than `zglm.eps(T)`.
 ///
@@ -142,6 +158,7 @@ pub const mulmatv = mat.Mat4x4f.mulv;
 pub const mulmats = mat.Mat4x4f.muls;
 pub const determinant = mat.Mat4x4f.determinant;
 pub const inverse = mat.Mat4x4f.inverse;
+pub const translate = mat.Mat4x4f.translate;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");
