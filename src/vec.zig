@@ -124,7 +124,7 @@ pub fn normalize(x: anytype) @TypeOf(x) {
 }
 
 // test values are random
-// expected values are from glm
+// expected values are from doing the same operation in glm
 // TODO i require more testing it
 const mate2 = Vec2f{ 2.6, 8.8 };
 const mate3 = Vec3f{ 4.9, 2.2, 6.5 };

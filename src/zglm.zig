@@ -133,6 +133,15 @@ pub const normalize = vec.normalize;
 
 const mat = @import("mat.zig");
 pub const Mat4x4f = mat.Mat4x4f;
+// more glsl-ification
+pub const zero4x4f = mat.Mat4x4f.zero;
+pub const identity4x4f = mat.Mat4x4f.identity;
+// TODO make these generic once there's more matrix types
+pub const mulmat = mat.Mat4x4f.mul;
+pub const mulmatv = mat.Mat4x4f.mulv;
+pub const mulmats = mat.Mat4x4f.muls;
+pub const determinant = mat.Mat4x4f.determinant;
+pub const inverse = mat.Mat4x4f.inverse;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");
