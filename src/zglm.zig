@@ -159,6 +159,13 @@ pub const mulmats = mat.Mat4x4f.muls;
 pub const determinant = mat.Mat4x4f.determinant;
 pub const inverse = mat.Mat4x4f.inverse;
 pub const translate = mat.Mat4x4f.translate;
+pub const rotate = mat.Mat4x4f.rotate;
+pub const perspectiveRhNo = mat.Mat4x4f.perspectiveRhNo;
+pub const perspective = mat.Mat4x4f.perspective;
+pub const orthoRhNo = mat.Mat4x4f.orthoRhNo;
+pub const ortho = mat.Mat4x4f.ortho;
+pub const project = mat.Mat4x4f.project;
+pub const unproject = mat.Mat4x4f.unproject;
 
 // i sure love namespacing!
 const swizzle = @import("swizzle.zig");
@@ -846,4 +853,30 @@ pub const aaaa = swizzle.aaaa;
 
 test {
     std.testing.refAllDecls(@This());
+}
+
+// just making sure it compiles
+test "the example from the readme" {
+    const zglm = @This();
+
+    // shut up compiler
+    const _a = zglm.Vec3f{ 1, 2, 3 };
+    const _b: zglm.Vec3f = @splat(1);
+    const c = zglm.cross(_b, zglm.zyx(_a));
+
+    const model = zglm.identity4x4f().rotate(zglm.radians(45), .{ 1, 0, 0 });
+    const view_rot = zglm.identity4x4f().rotate(zglm.radians(78), .{ 0, 1, 0 });
+    const view_pos = zglm.identity4x4f().translate(.{ 14, 4, -58 });
+    const view = view_rot.mul(view_pos);
+    const proj = zglm.perspective(.{
+        .fovy_rad = zglm.radians(70),
+        .aspect_ratio = 16.0 / 9.0,
+        .z_near = 0.001,
+        .z_far = 1000,
+    });
+    const mvp = proj.mul(view).mul(model);
+
+    // shut up compiler again
+    _ = &c;
+    _ = &mvp;
 }

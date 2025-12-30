@@ -17,23 +17,30 @@ exe.root_module.addImport("zglm", zglm.module("zglm"));
 
 ## Vectors
 
+Vectors are just Zig's [`@Vector`](https://ziglang.org/documentation/0.15.2/#Vectors) but fancier.
+
 ```zig
 const zglm = @import("zglm");
 
-const a = zglm.vec3f(1, 2, 3);
-const b = zglm.Vec3f.one();
-const c = a.cross(zglm.swizzle(b, .zyx));
+const a = zglm.Vec3f{1, 2, 3};
+const b = @splat(1);
+const c = zglm.cross(b, zglm.zyx(a));
 ```
 
 ## Matrices
 
 ```zig
 const zglm = @import("zglm");
-const pos = zglm.Mat4x4.translate(zglm.vec3f(1, 2, 3));
-const rot = zglm.Mat4x4.rotateX(1).mul(zglm.Mat4x4.rotateY(2));
 
-const model = zglm.Mat4x4.identity();
-const view = rot.mul(pos);
-const projection = zglm.Mat4x4.perspective(zglm.deg2rad(45), 16 / 9, 0.001, 1000);
-const mvp = projection.mul(view).mul(model);
+const model = zglm.identity4x4f().rotate(zglm.radians(45), .{ 1, 0, 0 });
+const view_rot = zglm.identity4x4f().rotate(zglm.radians(78), .{ 0, 1, 0 });
+const view_pos = zglm.identity4x4f().translate(.{ 14, 4, -58 });
+const view = view_rot.mul(view_pos);
+const proj = zglm.perspective(.{
+    .fovy_rad = zglm.radians(70),
+    .aspect_ratio = 16.0 / 9.0,
+    .z_near = 0.001,
+    .z_far = 1000,
+});
+const mvp = proj.mul(view).mul(model);
 ```

@@ -283,6 +283,17 @@ pub const Mat4x4f = struct {
         vec *= @splat(1.0 / vec[3]);
         return Vec3f{ vec[0], vec[1], vec[2] };
     }
+
+    /// Converts the matrix to a 2D array
+    pub fn toArray2D(mat: Mat4x4f) [4][4]f32 {
+        return .{ mat.raw[0], mat.raw[1], mat.raw[2], mat.raw[3] };
+    }
+
+    /// Converts the matrix to a 1D array
+    pub fn toArray1D(mat: Mat4x4f) [16]f32 {
+        // yes this is valid
+        return @bitCast(mat.toArray2D());
+    }
 };
 
 const eps = 0.0001;
@@ -504,4 +515,38 @@ test "unprojected -> projected -> unprojected" {
     });
     // a lot of precision is lost
     try t.expect(zglm.vecApproxEqlEps(src, unprojected, 0.2));
+}
+
+test "mat to array2d" {
+    const src = Mat4x4f.init(
+        .{ 1, 2, 3, 4 },
+        .{ 5, 6, 7, 8 },
+        .{ 9, 10, 11, 12 },
+        .{ 13, 14, 15, 16 },
+    );
+    const expected = [4][4]f32{
+        .{ 1, 2, 3, 4 },
+        .{ 5, 6, 7, 8 },
+        .{ 9, 10, 11, 12 },
+        .{ 13, 14, 15, 16 },
+    };
+    try t.expectEqual(expected, src.toArray2D());
+}
+
+test "mat to array1d" {
+    const src = Mat4x4f.init(
+        .{ 1, 2, 3, 4 },
+        .{ 5, 6, 7, 8 },
+        .{ 9, 10, 11, 12 },
+        .{ 13, 14, 15, 16 },
+    );
+    const expected = [16]f32{
+        // zig fmt: off
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16,
+        // zig fmt: on
+    };
+    try t.expectEqual(expected, src.toArray1D());
 }
