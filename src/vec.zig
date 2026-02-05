@@ -1,25 +1,47 @@
 const t = @import("std").testing;
 const zglm = @import("zglm.zig");
 
+// c naming conventions my beloved
+pub const Vec2hf = @Vector(2, f16);
 pub const Vec2f = @Vector(2, f32);
 pub const Vec2d = @Vector(2, f64);
+pub const Vec2c = @Vector(2, i8);
+pub const Vec2h = @Vector(2, i16);
 pub const Vec2i = @Vector(2, i32);
 pub const Vec2l = @Vector(2, i64);
+pub const Vec2cu = @Vector(2, u8);
+pub const Vec2hu = @Vector(2, u16);
+pub const Vec2iu = @Vector(2, u32);
+pub const Vec2lu = @Vector(2, u64);
 
+pub const Vec3hf = @Vector(3, f16);
 pub const Vec3f = @Vector(3, f32);
 pub const Vec3d = @Vector(3, f64);
+pub const Vec3c = @Vector(3, i8);
+pub const Vec3h = @Vector(3, i16);
 pub const Vec3i = @Vector(3, i32);
 pub const Vec3l = @Vector(3, i64);
+pub const Vec3cu = @Vector(3, u8);
+pub const Vec3hu = @Vector(3, u16);
+pub const Vec3iu = @Vector(3, u32);
+pub const Vec3lu = @Vector(3, u64);
 
+pub const Vec4hf = @Vector(4, f16);
 pub const Vec4f = @Vector(4, f32);
 pub const Vec4d = @Vector(4, f64);
+pub const Vec4c = @Vector(4, i8);
+pub const Vec4h = @Vector(4, i16);
 pub const Vec4i = @Vector(4, i32);
 pub const Vec4l = @Vector(4, i64);
+pub const Vec4cu = @Vector(4, u8);
+pub const Vec4hu = @Vector(4, u16);
+pub const Vec4iu = @Vector(4, u32);
+pub const Vec4lu = @Vector(4, u64);
 
-pub const Rgbf = Vec3f;
-pub const Rgb8 = Vec3i;
 pub const Rgbaf = Vec4f; // rgb as fuck
-pub const Rgba8 = Vec4i;
+pub const Rgba8 = Vec4cu;
+pub const Rgbf = Vec3f;
+pub const Rgb8 = Vec3cu;
 
 /// Raises a compile-time error if the type isn't a vector
 pub fn assertVec(comptime T: type) void {
