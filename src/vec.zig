@@ -1,48 +1,6 @@
 const t = @import("std").testing;
 const zglm = @import("zglm.zig");
 
-// c naming conventions my beloved
-pub const Vec2hf = @Vector(2, f16);
-pub const Vec2f = @Vector(2, f32);
-pub const Vec2d = @Vector(2, f64);
-pub const Vec2c = @Vector(2, i8);
-pub const Vec2h = @Vector(2, i16);
-pub const Vec2i = @Vector(2, i32);
-pub const Vec2l = @Vector(2, i64);
-pub const Vec2cu = @Vector(2, u8);
-pub const Vec2hu = @Vector(2, u16);
-pub const Vec2iu = @Vector(2, u32);
-pub const Vec2lu = @Vector(2, u64);
-
-pub const Vec3hf = @Vector(3, f16);
-pub const Vec3f = @Vector(3, f32);
-pub const Vec3d = @Vector(3, f64);
-pub const Vec3c = @Vector(3, i8);
-pub const Vec3h = @Vector(3, i16);
-pub const Vec3i = @Vector(3, i32);
-pub const Vec3l = @Vector(3, i64);
-pub const Vec3cu = @Vector(3, u8);
-pub const Vec3hu = @Vector(3, u16);
-pub const Vec3iu = @Vector(3, u32);
-pub const Vec3lu = @Vector(3, u64);
-
-pub const Vec4hf = @Vector(4, f16);
-pub const Vec4f = @Vector(4, f32);
-pub const Vec4d = @Vector(4, f64);
-pub const Vec4c = @Vector(4, i8);
-pub const Vec4h = @Vector(4, i16);
-pub const Vec4i = @Vector(4, i32);
-pub const Vec4l = @Vector(4, i64);
-pub const Vec4cu = @Vector(4, u8);
-pub const Vec4hu = @Vector(4, u16);
-pub const Vec4iu = @Vector(4, u32);
-pub const Vec4lu = @Vector(4, u64);
-
-pub const Rgbaf = Vec4f; // rgb as fuck
-pub const Rgba8 = Vec4cu;
-pub const Rgbf = Vec3f;
-pub const Rgb8 = Vec3cu;
-
 /// Raises a compile-time error if the type isn't a vector
 pub fn assertVec(comptime T: type) void {
     if (@typeInfo(T) != .vector) {
@@ -148,19 +106,19 @@ pub fn normalize(x: anytype) @TypeOf(x) {
 // test values are random
 // expected values are from doing the same operation in glm
 // TODO i require more testing it
-const mate2 = Vec2f{ 2.6, 8.8 };
-const mate3 = Vec3f{ 4.9, 2.2, 6.5 };
-const mate4 = Vec4f{ 5.7, 7.3, 6.8, 1.4 };
+const mate2 = @Vector(2, f32){ 2.6, 8.8 };
+const mate3 = @Vector(3, f32){ 4.9, 2.2, 6.5 };
+const mate4 = @Vector(4, f32){ 5.7, 7.3, 6.8, 1.4 };
 const eps = 0.0001;
 
 test "vectors approximately equal" {
-    const a: Vec2f = @splat(0.1);
-    const b: Vec2f = @splat(0.2);
+    const a: @Vector(2, f32) = @splat(0.1);
+    const b: @Vector(2, f32) = @splat(0.2);
 
     try t.expect(!approxEql(a, b));
     try t.expect(approxEql(a, a));
     try t.expect(approxEql(b, b));
-    try t.expect(approxEql(a + b, @as(Vec2f, @splat(0.3))));
+    try t.expect(approxEql(a + b, @as(@Vector(2, f32), @splat(0.3))));
 }
 
 test "vector dot product" {
@@ -183,12 +141,12 @@ test "vector normalize" {
 
 test "vector cross product" {
     try t.expect(approxEqlEps(
-        cross(mate3, Vec3f{ 6.5, 2.2, 4.9 }),
-        Vec3f{ -3.52, 18.24, -3.52 },
+        cross(mate3, @Vector(3, f32){ 6.5, 2.2, 4.9 }),
+        @Vector(3, f32){ -3.52, 18.24, -3.52 },
         eps,
     ));
 }
 
 test "vector distance" {
-    try t.expectApproxEqAbs(distance(mate3, Vec3f{ 6.5, 2.2, 4.9 }), 2.26274, eps);
+    try t.expectApproxEqAbs(distance(mate3, @Vector(3, f32){ 6.5, 2.2, 4.9 }), 2.26274, eps);
 }
